@@ -10,7 +10,7 @@ aside{border-left:4px solid var(--warn);background:var(--warn-bg);padding:.5rem 
 </style></head><body>
 <a href="#">support desk · kb</a>
 <h1>#4471 · three problems, not one</h1>
-<p class="meta"><span>owner <b>girisharathod</b></span><span>proposed</span><span>reviewed 2026-11-01</span></p>
+<p class="meta"><span>owner <b>girisharathod</b></span><span>known</span><span>reviewed 2026-11-01</span></p>
 <p><a href="#">#4471</a> was merged as one issue: the parser reads dates month first. That explains most of the reports. It does not explain all of them. Read by tenant instead of by subject line, the reports fall into three groups with three different fixes.</p>
 <aside>Not one issue. Fixing the parser will not close the whole ticket.</aside>
 <h2>How we sorted them</h2>
@@ -28,8 +28,10 @@ aside{border-left:4px solid var(--warn);background:var(--warn-bg);padding:.5rem 
 <p>Tenants alder.physio, copper.studio and pale.harbour run booking-v3. The form prints <code>MM/DD/YYYY</code> under the date field, even though these tenants write the day first. Their people type what the hint says, and the form reads it their way. The date is wrong from the first keystroke, and fixing the parser would not change it. Every report in this group came in through the form. The fix is the hint text on booking-v3.</p>
 <h3>3. A date moves by one day</h3>
 <p>A few reporters describe a booking that lands exactly one day off, not a month flipped: Tuesday shown as Monday, one client in Lisbon and one in Toronto getting different days, an invite arriving before the booking existed. The desk already listed them in <code>desk-notes.json</code> (<code>oneDayMove</code>). The cause logic files them under the parser, because their tenants write the day first, but a month swap cannot produce them. Timezone handling is the likely cause. The data does not prove it, so this needs an engineer to reproduce. The table above still counts these reports under <code>parser</code>, so read its parser row as the first problem plus these.</p>
+<h2>What engineering did</h2>
+<p>Engineering closed #4471 on 5 October. The parser fix shipped (<code>fix(dates): parse dd/mm for eu locales</code>), so problem 1 is done. The booking-v3 form was retired, so problem 2 is marked won't fix. Nothing in the engineering update covers the one-day move, so problem 3 is still open.</p>
 <h2>What to do next</h2>
-<ul><li>Split #4471 into one ticket per problem. The three tickets live in the <a href="https://github.com/girisharathod/kb-4471/issues">issue tracker of this repo</a>.</li><li>Fix the parser and the booking-v3 hint separately. Each needs its own test.</li><li>Ask engineering to reproduce the one-day move before anyone guesses at a cause.</li></ul>
+<ul><li>#4471 is now split into one ticket per problem; the first two are closed, the third is open. The three tickets live in the <a href="https://github.com/girisharathod/kb-4471/issues">issue tracker of this repo</a>.</li><li>Ask engineering to reproduce the one-day move before anyone guesses at a cause.</li></ul>
 <h2>Lessons</h2>
 <ul><li>A subject line tells you how a person felt, not what broke. Group by what the reports share.</li><li>Read the small piles. Five reports out of 412 were a different bug that a count would hide.</li></ul>
 <p class="stamp">desk ref <b>DR-GZWD-V5P2</b></p>

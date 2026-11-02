@@ -2,7 +2,7 @@
 layout: runbook
 title: '#4471 · three problems, not one'
 owner: girisharathod
-status: proposed
+status: known
 reviewed: 2026-11-01
 signature: v1.eyJzdWIiOiIxOTM4IiwiYXVkIjoiY2hhbGxlbmdlOndoYXQtaXQtc2hvd3MiLCJpYXQiOjE3OTM1ODgzODYsImV4cCI6MTc5MzY3NDc4Nn0.DFmj2_V7wMKedddLKuUmIxMaR8QiZP4Dkw9A2P--YSo
 ---
@@ -59,11 +59,17 @@ tenants write the day first, but a month swap cannot produce them. Timezone hand
 likely cause. The data does not prove it, so this needs an engineer to reproduce. The table above still counts these reports under
 `parser`, so read its parser row as the first problem plus these.
 
+## What engineering did
+
+Engineering closed #4471 on 5 October. The parser fix shipped (`fix(dates): parse dd/mm for eu
+locales`), so problem 1 is done. The booking-v3 form was retired, so problem 2 is marked
+won't fix. Nothing in the engineering update covers the one-day move, so problem 3 is still
+open.
+
 ## What to do next
 
-- Split #4471 into one ticket per problem. The three tickets live in the
+- #4471 is now split into one ticket per problem; the first two are closed, the third is open. The three tickets live in the
   [issue tracker of this repo](https://github.com/girisharathod/kb-4471/issues).
-- Fix the parser and the booking-v3 hint separately. Each needs its own test.
 - Ask engineering to reproduce the one-day move before anyone guesses at a cause.
 
 ## Lessons
