@@ -1,0 +1,74 @@
+---
+layout: runbook
+title: '#4471 · three problems, not one'
+owner: girisharathod
+status: proposed
+reviewed: 2026-11-01
+signature: girisharathod
+---
+
+<script>
+  import CauseTable from '#lib/kb/CauseTable.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+
+  const signature = 'girisharathod';
+</script>
+
+[#4471](/kb/incidents/4471) was merged as one issue: the parser reads dates month first. That
+explains most of the reports. It does not explain all of them. Read by tenant instead of by
+subject line, the reports fall into three groups with three different fixes.
+
+<Callout kind="warn">
+Not one issue. Fixing the parser will not close the whole ticket.
+</Callout>
+
+## How we sorted them
+
+Decision [0001](/kb/decisions/0001-dedupe-by-subject) merges on subject alone. Subjects
+here are the same few phrases on every cause, so the merge could not tell causes apart. We used
+what `src/lib/kb/causes.ts` already knows instead: the tenant's locale and the booking form the
+tenant runs. Intake's browser guess is not a reliable signal. It disagrees with the tenant
+for about one report in eleven. The export also repeats some rows, so we count each id once.
+
+<CauseTable ticket={4471} />
+
+## The problems
+
+### 1. Parser reads dates month first
+
+Eleven tenants write the day first. The shared parser reads every date month first, so
+12 May comes out as 5 December. This is what #4471 was filed for. It covers most of the
+queue and every channel: app, email and form.
+
+### 2. The booking-v3 form hints the wrong format
+
+Tenants alder.physio, copper.studio and pale.harbour run booking-v3. The form prints
+`MM/DD/YYYY` under the date field, even though these tenants write the day first. Their people
+type what the hint says, and the form reads it their way. The date is wrong from the first
+keystroke, and fixing the parser would not change it. Every report in this group came in
+through the form. The fix is the hint text on booking-v3.
+
+### 3. A date moves by one day
+
+A few reporters describe a booking that lands exactly one day off, not a month flipped:
+Tuesday shown as Monday, one client in Lisbon and one in Toronto getting different days, an
+invite arriving before the booking existed. The desk already listed them in
+`desk-notes.json` (`oneDayMove`). The cause logic files them under the parser, because their
+tenants write the day first, but a month swap cannot produce them. Timezone handling is the
+likely cause. The data does not prove it, so this needs an engineer to reproduce. The table above still counts these reports under
+`parser`, so read its parser row as the first problem plus these.
+
+## What to do next
+
+- Split #4471 into one ticket per problem. The three tickets live in the
+  [issue tracker of this repo](https://github.com/girisharathod/kb-4471/issues).
+- Fix the parser and the booking-v3 hint separately. Each needs its own test.
+- Ask engineering to reproduce the one-day move before anyone guesses at a cause.
+
+## Lessons
+
+- A subject line tells you how a person felt, not what broke. Group by what the reports share.
+- Read the small piles. Five reports out of 412 were a different bug that a count would hide.
+
+<RenderStamp {signature} />

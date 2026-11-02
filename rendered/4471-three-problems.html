@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>#4471 · three problems, not one · support kb</title>
+<style>
+:root{--bg:#fbfaf7;--fg:#1d1d1b;--muted:#6b6a66;--line:#e3e0d8;--accent:#2f6f5e;--warn:#b4501f;--warn-bg:#fbeee6;--note-bg:#eef5f2;--mono:ui-monospace,Menlo,monospace}
+body{background:var(--bg);color:var(--fg);font:16px/1.55 system-ui,sans-serif;max-width:46rem;margin:2rem auto;padding:0 1rem}
+.meta span{margin-right:1rem;color:var(--muted)} table{border-collapse:collapse;width:100%} td,th{border-bottom:1px solid var(--line);padding:.35rem .5rem;text-align:left}
+.tags,.note{color:var(--muted);font-size:.85em} .wrong td{background:var(--warn-bg)} .wrong td:last-child{color:var(--warn);font-weight:600}
+aside{border-left:4px solid var(--warn);background:var(--warn-bg);padding:.5rem 1rem;margin:1rem 0}
+.stamp{margin:2rem 0 0;font:.85rem var(--mono);color:var(--muted)} .stamp b{color:var(--accent);letter-spacing:.04em}
+</style></head><body>
+<a href="#">support desk · kb</a>
+<h1>#4471 · three problems, not one</h1>
+<p class="meta"><span>owner <b>girisharathod</b></span><span>proposed</span><span>reviewed 2026-11-01</span></p>
+<p><a href="#">#4471</a> was merged as one issue: the parser reads dates month first. That explains most of the reports. It does not explain all of them. Read by tenant instead of by subject line, the reports fall into three groups with three different fixes.</p>
+<aside>Not one issue. Fixing the parser will not close the whole ticket.</aside>
+<h2>How we sorted them</h2>
+<p>Decision <a href="#">0001</a> merges on subject alone. Subjects here are the same few phrases on every cause, so the merge could not tell causes apart. We used what <code>src/lib/kb/causes.ts</code> already knows instead: the tenant's locale and the booking form the tenant runs. Intake's browser guess is not a reliable signal. It disagrees with the tenant for about one report in eleven. The export also repeats some rows, so we count each id once.</p>
+<p><strong>412</strong> reports merged into #4471 · <strong>2</strong> causes</p>
+<table><thead><tr><th>cause</th><th>reports</th><th>tagged as</th><th>tenants</th><th>seen</th><th></th></tr></thead><tbody>
+<tr><td><code>parser</code></td><td>379</td><td class="tags">parser ×356 · hint ×23</td><td>11</td><td>2026-04-01 → 2026-10-04</td><td>#4471</td></tr>
+<tr class="wrong"><td><code>hint</code></td><td>33</td><td class="tags">hint ×18 · parser ×15</td><td>3</td><td>2026-04-17 → 2026-09-22</td><td>not this ticket — no ticket of its own</td></tr>
+</tbody></table>
+<p class="note">5 reports read as a one-day move; filed under <code>parser</code> by tenant.</p>
+<h2>The problems</h2>
+<h3>1. Parser reads dates month first</h3>
+<p>Eleven tenants write the day first. The shared parser reads every date month first, so 12 May comes out as 5 December. This is what #4471 was filed for. It covers most of the queue and every channel: app, email and form.</p>
+<h3>2. The booking-v3 form hints the wrong format</h3>
+<p>Tenants alder.physio, copper.studio and pale.harbour run booking-v3. The form prints <code>MM/DD/YYYY</code> under the date field, even though these tenants write the day first. Their people type what the hint says, and the form reads it their way. The date is wrong from the first keystroke, and fixing the parser would not change it. Every report in this group came in through the form. The fix is the hint text on booking-v3.</p>
+<h3>3. A date moves by one day</h3>
+<p>A few reporters describe a booking that lands exactly one day off, not a month flipped: Tuesday shown as Monday, one client in Lisbon and one in Toronto getting different days, an invite arriving before the booking existed. The desk already listed them in <code>desk-notes.json</code> (<code>oneDayMove</code>). The cause logic files them under the parser, because their tenants write the day first, but a month swap cannot produce them. Timezone handling is the likely cause. The data does not prove it, so this needs an engineer to reproduce. The table above still counts these reports under <code>parser</code>, so read its parser row as the first problem plus these.</p>
+<h2>What to do next</h2>
+<ul><li>Split #4471 into one ticket per problem. The three tickets live in the <a href="https://github.com/girisharathod/kb-4471/issues">issue tracker of this repo</a>.</li><li>Fix the parser and the booking-v3 hint separately. Each needs its own test.</li><li>Ask engineering to reproduce the one-day move before anyone guesses at a cause.</li></ul>
+<h2>Lessons</h2>
+<ul><li>A subject line tells you how a person felt, not what broke. Group by what the reports share.</li><li>Read the small piles. Five reports out of 412 were a different bug that a count would hide.</li></ul>
+<p class="stamp">desk ref <b>DR-XW5Q-YQ0R</b></p>
+</body></html>
