@@ -4,7 +4,7 @@ title: '#4471 · three problems, not one'
 owner: girisharathod
 status: proposed
 reviewed: 2026-11-01
-signature: girisharathod
+signature: v1.eyJzdWIiOiIxOTM4IiwiYXVkIjoiY2hhbGxlbmdlOndoYXQtaXQtc2hvd3MiLCJpYXQiOjE3OTM1ODgzODYsImV4cCI6MTc5MzY3NDc4Nn0.DFmj2_V7wMKedddLKuUmIxMaR8QiZP4Dkw9A2P--YSo
 ---
 
 <script>
@@ -12,7 +12,7 @@ signature: girisharathod
   import Callout from '#lib/kb/Callout.svelte';
   import RenderStamp from '#lib/kb/RenderStamp.svelte';
 
-  const signature = 'girisharathod';
+  const signature = 'v1.eyJzdWIiOiIxOTM4IiwiYXVkIjoiY2hhbGxlbmdlOndoYXQtaXQtc2hvd3MiLCJpYXQiOjE3OTM1ODgzODYsImV4cCI6MTc5MzY3NDc4Nn0.DFmj2_V7wMKedddLKuUmIxMaR8QiZP4Dkw9A2P--YSo';
 </script>
 
 [#4471](/kb/incidents/4471) was merged as one issue: the parser reads dates month first. That
